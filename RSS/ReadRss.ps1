@@ -1,4 +1,33 @@
-$total = foreach ($item in Invoke-RestMethod -Uri "https://azurecomcdn.azureedge.net/en-us/blog/feed/" ) {
+<#
+
+.SYNOPSIS
+
+Read last specific number of RSS item feed and shows it in a terminal
+
+.EXAMPLE
+
+PS > ReadRss "https://azurecomcdn.azureedge.net/en-us/blog/feed/"
+Get last 10 items from Azure Feed and shows them in terminal
+
+PS > ReadRss "https://azurecomcdn.azureedge.net/en-us/blog/feed/" -LastItemCount 20
+Get last 20 items from Azure Feed and shows them in terminal
+
+#>
+[CmdletBinding()]
+param(    
+    [Parameter(Position=0)]
+    $Link = "https://azurecomcdn.azureedge.net/en-us/blog/feed/",
+	[Parameter(Position=1)]
+	[int]$LastItemCount = 10
+)
+
+Set-StrictMode -Version 3
+
+if ($Link -eq "") {
+	$Link = "https://azurecomcdn.azureedge.net/en-us/blog/feed/"
+}
+
+$total = foreach ($item in Invoke-RestMethod -Uri $Link) {
     [PSCustomObject]@{
         'Date published'   = $item.pubDate
         Title              = $item.Title
@@ -6,4 +35,4 @@ $total = foreach ($item in Invoke-RestMethod -Uri "https://azurecomcdn.azureedge
     }
 }
 
-$total | Sort-Object { $_."Date published" -as [datetime] } |  Select-Object -Last 10
+$total | Sort-Object { $_."Date published" -as [datetime] } |  Select-Object -Last $LastItemCount
