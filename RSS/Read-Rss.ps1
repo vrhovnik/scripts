@@ -9,8 +9,8 @@ Read last specific number of RSS item feed and shows it in a terminal
 PS > ReadRss "https://azurecomcdn.azureedge.net/en-us/blog/feed/"
 Get last 10 items from Azure Feed and shows them in terminal
 
-PS > ReadRss "https://azurecomcdn.azureedge.net/en-us/blog/feed/" -LastItemCount 20
-Get last 20 items from Azure Feed and shows them in terminal
+PS > ReadRss "https://azurecomcdn.azureedge.net/en-us/blog/feed/" -LastItemCount 2
+Get last 2 items from Azure Feed and shows them in terminal
 
 #>
 [CmdletBinding()]

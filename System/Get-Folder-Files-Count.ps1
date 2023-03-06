@@ -17,6 +17,7 @@ get stats for specific folder
 param(
     ## provided folder
     [Parameter]
+    [string]
     $folder
 )
 
