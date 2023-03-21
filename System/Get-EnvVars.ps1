@@ -16,7 +16,7 @@ param(
     $EnvFile
 )
 
-f (!(Test-Path $EnvFile -PathType Leaf)) {
+if (!(Test-Path $EnvFile -PathType Leaf)) {
     Write-Error "$EnvFile is not a file."
     return;
 }
