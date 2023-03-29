@@ -6,10 +6,10 @@ Get directories and files count
 
 .EXAMPLE
 
-PS > Get-Folder-Files-Count
+PS > Get-FolderFilesCount
 get stats for current folder
 
-PS > Get-Folder-Files-Count -Folder "c:\Work"
+PS > Get-FolderFilesCount -Folder "c:\Work"
 get stats for specific folder
 
 #>

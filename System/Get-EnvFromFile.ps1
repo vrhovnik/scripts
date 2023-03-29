@@ -6,7 +6,7 @@ Get values from .env file and store them to environment variables
 
 .EXAMPLE
 
-PS > Read-Env-From-File -EnvFileToReadFrom "sample.env"
+PS > Get-EnvFromFile -EnvFileToReadFrom "sample.env"
 get env from file and set them
 
 #>
