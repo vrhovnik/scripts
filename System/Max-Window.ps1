@@ -45,6 +45,7 @@ if ($ProcessName -eq "") {
 if ((Get-process -name $ProcessName).Count -eq 0) {
     Write-Output  "ProcessName $ProcessName is not defined, check if it runs."
     return;
+}
 
 $procId = (Get-process -name $ProcessName | Select-Object -First 1).ID
 Show-Process -Process (Get-Process -Id $procId) -Maximize
