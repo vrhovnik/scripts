@@ -5,7 +5,7 @@ Get weather from wttr.in and show it in RSS
 
 .EXAMPLE
 
-PS > Get-Weather-Info
+PS > Get-WeatherInfo
 get stats for weather for current location
 
 
