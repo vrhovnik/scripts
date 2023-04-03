@@ -11,6 +11,7 @@ add folder to system environment variables
 
 #>
 
+[CmdletBinding(DefaultParameterSetName = "System")]
 param(
     [Parameter(HelpMessage = "Provide the path to add to system environment")]
     [string]    

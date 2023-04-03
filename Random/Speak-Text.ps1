@@ -14,7 +14,7 @@ uses .NET library to speak provided text - in this case "Hello World"
 It uses .NET library to speak provided text. It uses System.Speech.Synthesis.SpeechSynthesizer class and Speak method.
 
 #>
-
+[CmdletBinding(DefaultParameterSetName = "Random")]
 param(
     [Parameter(HelpMessage = "Provide the root path which contains bin,obj folders", Mandatory = $true)]
     [string]    

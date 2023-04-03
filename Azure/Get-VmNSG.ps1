@@ -14,7 +14,7 @@ get NSG from VM in resource group ResourceGroupName
 get NSG associated with VM and details of the NSG
 
 #>
-
+[CmdletBinding(DefaultParameterSetName = "Azure")]
 param(
     [Parameter(HelpMessage = "Provide the VM name", Mandatory = $true)]
     [string]    

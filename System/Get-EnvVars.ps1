@@ -10,6 +10,7 @@ PS > Get-EnvVars -EnvFile "c:\Work\test.env"
 
 #>
 
+[CmdletBinding(DefaultParameterSetName = "System")]
 param(    
     [Parameter(HelpMessage = "File with env variables", Mandatory = $true)]
     [string]

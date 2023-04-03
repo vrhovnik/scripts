@@ -11,6 +11,7 @@ get env from file and set them
 
 #>
 
+[CmdletBinding(DefaultParameterSetName = "System")]
 param(
     [Parameter(HelpMessage = "Provide the name of the file to read", Mandatory=$true)]
     [string]    

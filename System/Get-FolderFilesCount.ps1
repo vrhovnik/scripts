@@ -9,11 +9,13 @@ Get directories and files count
 PS > Get-FolderFilesCount
 get stats for current folder
 
+.EXAMPLE 
+
 PS > Get-FolderFilesCount -Folder "c:\Work"
 get stats for specific folder
 
 #>
-
+[CmdletBinding(DefaultParameterSetName = "System")]
 param(    
     [Parameter(HelpMessage="Folder to get stats for")]
     [string]$Folder

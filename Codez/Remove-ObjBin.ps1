@@ -17,7 +17,7 @@ Author for this script is Ardalis on below link:
 https://ardalis.com/delete-bin-obj-folders-recursively/
 
 #>
-
+[CmdletBinding(DefaultParameterSetName = "Codez")]
 param(
     [Parameter(HelpMessage = "Provide the root path which contains bin,obj folders")]
     [string]    

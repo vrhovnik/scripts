@@ -16,7 +16,7 @@ Finds process and maximizes the window. If it doesn't run, it will exit. Also, i
 Function Courtsy of: community.idera.com/database-tools/powershell/powertips/b/tips/posts/bringing-window-in-the-foreground
 
 #>
-
+[CmdletBinding(DefaultParameterSetName = "System")]
 param(
     [Parameter(HelpMessage = "Provide the name of the proces to put in front and maximize the window", Mandatory = $true)]
     [string]        

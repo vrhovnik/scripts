@@ -9,11 +9,13 @@ Get installed software list
 PS > Get-InstalledSoftware
 get stats for current folder
 
+.EXAMPLE 
+
 PS > Get-InstalledSoftware -SoftwareName "Dotnet"
-get  information about installation software
+get  information about installation software based on search query
 
 #>
-
+[CmdletBinding(DefaultParameterSetName = "System")]
 param(    
     [Parameter(HelpMessage = "Software name to get info if it is installed")]
     [string]$SoftwareName

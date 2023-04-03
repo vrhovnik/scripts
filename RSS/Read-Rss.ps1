@@ -13,7 +13,7 @@ PS > ReadRss "https://azurecomcdn.azureedge.net/en-us/blog/feed/" -LastItemCount
 Get last 2 items from Azure Feed and shows them in terminal
 
 #>
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = "RSS")]
 param(    
     [Parameter(Position=0)]
     $Link = "https://azurecomcdn.azureedge.net/en-us/blog/feed/",

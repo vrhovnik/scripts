@@ -1,3 +1,5 @@
+
+
 $friendlyName = "IIS Express Development Certificate"
 $certStore = "Cert:\LocalMachine\My"
 $oldCert = Get-ChildItem $certStore | Where-Object FriendlyName -match $friendlyName
