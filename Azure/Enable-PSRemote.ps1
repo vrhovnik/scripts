@@ -65,10 +65,13 @@ if ($null -eq $rule) {
     Write-Output "NSG rule added - changes applied."   
 }
 
-
-Write-Output "Adding $VmName to trusted hosts on the client machine without confirmation"
-Set-Item wsman:\localhost\Client\TrustedHosts -Value $VmName -Confirm:$false
-Write-Output "Added $VmName to trusted hosts on the client machine, continuing with enabling PS remote on $VmName"
+Write-Verbose "Checking trusted hosts on the client machine for the VM $VmName"
+$trustedHosts = Get-Item wsman:\localhost\Client\TrustedHosts
+if ($trustedHosts -eq "" -or $null -eq $trustedHosts -or $trustedHosts.Value.Contains($VmName) -eq $false) {
+    Write-Output "Trusted hosts on the client machine are empty, adding $VmName to trusted hosts on the client machine"
+    Set-Item wsman:\localhost\Client\TrustedHosts -Value $VmName
+    Write-Output "Added $VmName to trusted hosts on the client machine, continuing with enabling PS remote on $VmName"
+}
 
 # Enable PS remote on VM
 Write-Output "Adding rule to firewall to allow WinRM connections on the Virtual Machine via Run command on Azure VM $VmName"
@@ -95,5 +98,10 @@ if ($EstablishRemoteConnection) {
     Write-Output "Establishing remote connection to VM $VmName"
     $Skip = New-PSSessionOption -SkipCACheck -SkipCNCheck
     Write-Verbose "Skip the requirement to import a certificate to the VM when you start the session"
-    Enter-PSSession -ComputerName  $VmName -port "5986" -Credential (Get-Credential) -useSSL -SessionOption $Skip
+    Write-Verbose "Getting IP to connect to the VM"
+    $publicIpName = $nic.IpConfigurations.PublicIpAddress.Name
+    Write-Verbose "Name of the public IP is $publicIpName"
+    $publicIp = Get-AzPublicIpAddress -Name $publicIpId
+    Write-Verbose "Public IP is $($publicIp.IpAddress)"
+    Enter-PSSession -ComputerName $publicIp.IpAddress -port "5986" -Credential (Get-Credential) -useSSL -SessionOption $Skip
 }
