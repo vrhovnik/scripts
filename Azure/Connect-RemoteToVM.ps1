@@ -9,6 +9,10 @@ Connect via PS remote to VM in Azure
 PS > Connect-RemoteToVM -VmName "VMName" -ResourceGroupName "ResourceGroupName"
 connect PS remotely on VM in Azure with name VMName in resource group ResourceGroupName
 
+.EXAMPLE
+
+PS > Connect-RemoteToVM -VmName "VMName" -ResourceGroupName "ResourceGroupName" -AutoStart
+connect PS remotely on VM in Azure with name VMName in resource group ResourceGroupName and if not running it will run it
 
 .DESCRIPTION
 
@@ -21,6 +25,9 @@ Name of the virtual machine in Azure Subscription
 .PARAMETER ResourceGroupName
 Name of the resource group in Azure Subscription where VM is located
 
+.PARAMETER AutoStart
+$true to start machine if not running
+
 #>
 [CmdletBinding(DefaultParameterSetName = "Azure")]
 param(
@@ -29,7 +36,9 @@ param(
     $VmName,
     [Parameter(HelpMessage = "Provide the resource group name", Mandatory = $true, ParameterSetName = "VM")]
     [string]    
-    $ResourceGroupName
+    $ResourceGroupName,
+    [Parameter(HelpMessage = "Start machine if not running", Mandatory = $false)]
+    [switch]$AutoStart
 )
 
 Write-Verbose "Checking trusted hosts on the client machine for the VM $VmName"
@@ -53,6 +62,15 @@ $nic = Get-AzNetworkInterface -Name $vm.NetworkInterfaceIds[0]
 if ($null -eq $nic.IpConfigurations.PublicIpAddress) {
     Write-Error "VM $VmName in resource group $ResourceGroupName does not have public IP address"
     return
+}
+
+if ($AutoStart) {
+    $vmStatus = Get-AzVM -ResourceGroupName $ResourceGroupName -Name $VmName -Status
+    if ($vmStatus.Statuses[1].Code -ne "PowerState/running") {
+        Write-Output "Machine $VmName is not running, starting it."
+        Start-AzVM -ResourceGroupName $ResourceGroupName -Name $VmName -Verbose
+        Write-Output "Machine $VmName started."
+    }
 }
 
 $publicIpName = $nic.IpConfigurations.PublicIpAddress.Name
