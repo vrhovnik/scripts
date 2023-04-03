@@ -43,7 +43,7 @@ param(
     [switch]$EstablishRemoteConnection
 )
 
-Start-Transcript -Path "Enable-PSRemote.log" -Force
+Start-Transcript -Path "Enable-PSRemote.log" -Append -Force
 
 Write-Output "Getting VM $VmName in resource group $ResourceGroupName and all the details"
 
@@ -54,19 +54,34 @@ Write-Verbose "Getting NIC $($nic.Name) in resource group $($nic.ResourceGroupNa
 $nsg = Get-AzNetworkSecurityGroup | Where-Object -Property Id -EQ $nic.NetworkSecurityGroup[0].Id 
 Write-Verbose "Getting NSG $($nsg.Name) in resource group $($nsg.ResourceGroupName) with id $($nsg.Id)"
 
-Write-Output "Adding network security rule to NSG $($nsg.Name) in resource group $($nsg.ResourceGroupName) to allow WinRM connections on port 5986"
-Add-AzNetworkSecurityRuleConfig -Name WinRM -NetworkSecurityGroup $networkSecurityGroup `
-    -Description "Allow WinRM" -Access Allow -Protocol Tcp -Direction Inbound -Priority 400 `
-    -SourceAddressPrefix * -SourcePortRange * -DestinationAddressPrefix * -DestinationPortRange 5986
-Set-AzNetworkSecurityGroup -NetworkSecurityGroup $networkSecurityGroup
-Write-Output "NSG rule added - changes applied."
+#check, if NSG rule already exists
+$rule = $nsg.SecurityRules | Where-Object -Property DestinationPortRange -EQ "5986"
+if ($null -eq $rule) {
+    Write-Output "Adding network security rule to NSG $($nsg.Name) in resource group $($nsg.ResourceGroupName) to allow WinRM connections on port 5986"
+    Add-AzNetworkSecurityRuleConfig -Name "WinRM-$VmName" -NetworkSecurityGroup $nsg `
+        -Description "Allow WinRM on $VmName" -Access Allow -Protocol Tcp -Direction Inbound -Priority 400 `
+        -SourceAddressPrefix * -SourcePortRange * -DestinationAddressPrefix * -DestinationPortRange 5986
+    Set-AzNetworkSecurityGroup -NetworkSecurityGroup $nsg
+    Write-Output "NSG rule added - changes applied."   
+}
 
-Write-Output "Adding $VmName to trusted hosts on the client machine"
-Set-Item wsman:\localhost\Client\TrustedHosts -value $VmName
+
+Write-Output "Adding $VmName to trusted hosts on the client machine without confirmation"
+Set-Item wsman:\localhost\Client\TrustedHosts -Value $VmName -Confirm:$false
 Write-Output "Added $VmName to trusted hosts on the client machine, continuing with enabling PS remote on $VmName"
 
 # Enable PS remote on VM
 Write-Output "Adding rule to firewall to allow WinRM connections on the Virtual Machine via Run command on Azure VM $VmName"
+
+Write-Verbose "Check, if machine is running. If not, start it."
+$vmStatus = Get-AzVM -ResourceGroupName $ResourceGroupName -Name $VmName -Status
+if ($vmStatus.Statuses[1].Code -ne "PowerState/running") {
+    Write-Output "Machine $VmName is not running, starting it."
+    Start-AzVM -ResourceGroupName $ResourceGroupName -Name $VmName -Verbose
+    Write-Output "Machine $VmName started."
+}
+
+Write-Verbose "Machine $VmName is running, enabling PS remote on it."
 Invoke-AzVMRunCommand -ResourceGroupName $ResourceGroupName -Name $VmName -CommandId 'RunPowerShellScript' -ScriptString 'Enable-PSRemoting -Force
 New-NetFirewallRule -Name "Allow WinRM HTTPS" -DisplayName "WinRM HTTPS" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5986 -Protocol TCP
 $thumbprint = (New-SelfSignedCertificate -DnsName $env:COMPUTERNAME -CertStoreLocation Cert:\LocalMachine\My).Thumbprint
