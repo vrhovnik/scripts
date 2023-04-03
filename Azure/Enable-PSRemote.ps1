@@ -19,7 +19,8 @@ enable PS remote on VM in Azure with name VMName in resource group ResourceGroup
 Enable PS remote on VM in Azure. 
 It adds rule to NSG to allow WinRM connections on port 5986, adds VM to trusted hosts on the client machine, 
 enables PS remote on VM and adds rule to firewall to allow WinRM connections on the Virtual Machine via Run 
-command on Azure VM and saves everything in transcript file.
+command on Azure VM and saves everything in transcript file. If -EstablishRemoteConnection is provided,
+then it will get public IP of the VM and establish remote connection to it.
 
 .PARAMETER VmName
 Name of the virtual machine in Azure Subscription
@@ -96,6 +97,11 @@ Stop-Transcript
 
 if ($EstablishRemoteConnection) {
     Write-Output "Establishing remote connection to VM $VmName"
+    if ($null -eq $nic.IpConfigurations.PublicIpAddress) {
+        Write-Error "VM $VmName in resource group $ResourceGroupName does not have public IP address"
+        return
+    }
+    
     $Skip = New-PSSessionOption -SkipCACheck -SkipCNCheck
     Write-Verbose "Skip the requirement to import a certificate to the VM when you start the session"
     Write-Verbose "Getting IP to connect to the VM"
