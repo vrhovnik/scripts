@@ -6,12 +6,12 @@ Check if there are any applications with security key expiration in the next day
 
 .EXAMPLE
 
-PS > Check-AppSecurityKeyExpiration 
+PS > Get-AppSecurityKeyExpiration 
 Check if there are any applications with security key expiration in the 30 days
 
 .EXAMPLE
 
-PS > Check-AppSecurityKeyExpiration -NumberOfDays 7
+PS > Get-AppSecurityKeyExpiration -NumberOfDays 7
 Check if there are any applications with security key expiration in last 7 days
 
 .DESCRIPTION
