@@ -7,7 +7,12 @@ Check if there are any applications with security key expiration in the next day
 .EXAMPLE
 
 PS > Check-AppSecurityKeyExpiration 
-connect PS remotely on VM in Azure with name VMName in resource group ResourceGroupName
+Check if there are any applications with security key expiration in the 30 days
+
+.EXAMPLE
+
+PS > Check-AppSecurityKeyExpiration -NumberOfDays 7
+Check if there are any applications with security key expiration in last 7 days
 
 .DESCRIPTION
 
