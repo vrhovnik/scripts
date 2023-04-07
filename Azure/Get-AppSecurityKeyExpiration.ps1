@@ -39,7 +39,7 @@ $true install Ms Graph module, $false outputs instructions and finishes the scri
 https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation?view=graph-powershell-1.0
 
 #>
-[CmdletBinding(DefaultParameterSetName = "Azure")]
+[CmdletBinding(DefaultParameterSetName = "MSGraph")]
 param(
     [Parameter(HelpMessage = "Provide the number of days to check")]
     [int]    
@@ -49,12 +49,13 @@ param(
 )
 
 Write-Verbose "Checking if Microsoft.Graph module is installed"
-$moduleInstalled = Get-Module -Name "Microsoft.Graph"
+$moduleInstalled = Get-InstalledModule -Name "Microsoft.Graph"
 if ($null -eq $moduleInstalled) {
     Write-Host "Microsoft.Graph module is not installed."
     if ($InstallDependency)
     {
         Install-Module -Name "Microsoft.Graph" -Force
+        Import-Module Microsoft.Graph
         Write-Host "Module installed, continuing with execution."
     }
     else{
@@ -66,8 +67,10 @@ if ($null -eq $moduleInstalled) {
     }
 }
 
-Write-Host "Checking if there are any applications with security key expiration in the next $NumberOfDays days"
-
+Write-Output "Connecting to Microsoft Graph with read scope on applications"
+Connect-MgGraph -Scopes "Application.Read.All"
+Write-Verbose "Getting data from scope: $(Get-MgContext | Select-Object -Expand ContextScope)"
+Write-Output "Checking if there are any applications with security key expiration in the next $NumberOfDays days"
 Get-MgApplication | Select-Object AppId -ExpandProperty PasswordCredentials 
 | Where-Object EndDateTime -lt (Get-Date).AddDays(365) 
 | Sort-Object EndDateTime 
