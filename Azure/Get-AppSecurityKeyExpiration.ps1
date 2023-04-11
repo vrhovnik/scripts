@@ -72,6 +72,6 @@ Connect-MgGraph -Scopes "Application.Read.All"
 Write-Verbose "Getting data from scope: $(Get-MgContext | Select-Object -Expand ContextScope)"
 Write-Output "Checking if there are any applications with security key expiration in the next $NumberOfDays days"
 Get-MgApplication | Select-Object AppId -ExpandProperty PasswordCredentials 
-| Where-Object EndDateTime -lt (Get-Date).AddDays(365) 
+| Where-Object EndDateTime -lt (Get-Date).AddDays($NumberOfDays) 
 | Sort-Object EndDateTime 
 | Format-Table AppId, DisplayName, EndDateTime
