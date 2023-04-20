@@ -36,7 +36,7 @@ Write-Output "Status of VM $($vmStatus.Statuses[1].Code)"
 $result = $vmStatus.Statuses[1].Code -eq "PowerState/running"
 if ($result -eq $false) {
     Write-Verbose "Starting Azure VM"
-    Start-AzVM -Name $VmName -ResourceGroupName $ResourceGroupName
+    Start-AzVM -Name $VmName -ResourceGroupName $ResourceGroupName | Out-Null
 }       
 
 Write-Output "Machine $VmName in resource group $ResourceGroupName is running."
