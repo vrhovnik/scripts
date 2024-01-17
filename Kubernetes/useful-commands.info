@@ -1,0 +1,25 @@
+# copied from https://dev.to/zenika/kubernetes-a-pragmatic-kubectl-aliases-collection-17oc
+
+# get system pods
+kubectl --namespace=kube-system get pod
+
+# get events sorted by creation timestamp
+kubectl get events --sort-by=.metadata.creationTimestamp'
+
+# get pod's descending events
+function kger() { kctl get events --sort-by=.lastTimestamp --field-selector involvedObject.name="$@" }
+
+# get 'real' all
+alias kgworld='kctl get $(kubectl api-resources --verbs=list --namespaced -o name | paste -sd ",")'
+
+# display all nodes resources request and limits
+k get nodes --no-headers | awk '{print \$1}' | xargs -I {} sh -c 'echo {} ; kubectl describe node {} | grep Allocated -A 5 | grep -ve Event -ve Allocated -ve percent -ve -- ; echo '"
+
+# start a debug pod (including lots of troubleshooting tools)
+kubectl -n default run debug-$USER --rm -it --tty --image leodotcloud/swiss-army-knife:v0.12 --image-pull-policy=IfNotPresent -- bash"
+
+# get pod's containers list
+kubectl get pod -o jsonpath="{.spec.containers[*].name}" "$@" && echo "" }
+
+# ping a service, ex: 'command whoami:8080'
+kubectl run httping -it --image bretfisher/httping --image-pull-policy=IfNotPresent --rm=true --
