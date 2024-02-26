@@ -64,6 +64,7 @@ $directories | ForEach-Object {
     git pull
     Write-Output "Done git pull in $($_.FullName)"
 }
+Set-Location -Path $RootFolderPath 
 Write-Output "Running git pull in $numberOfDirectories directories, exiting"
 Stop-Transcript
 if ($ShowLog)
