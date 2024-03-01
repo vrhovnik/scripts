@@ -12,6 +12,7 @@ Searches for the "pwsh" application, and then give back the result
 
 #>
 [CmdletBinding(DefaultParameterSetName = "Codez")]
+[Alias('cheat')]
 param(
     ## The string to search for
     [Parameter(Mandatory = $true)]

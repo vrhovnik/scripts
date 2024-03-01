@@ -19,6 +19,7 @@ https://jeffhicks.substack.com/p/powershell-functions-101
 
 #>
 [CmdletBinding(DefaultParameterSetName = "System")]
+[Alias('uptime')]
 param(   
 )
 

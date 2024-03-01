@@ -27,6 +27,7 @@ http://github.com/vrhovnik
  
 #>
 [CmdletBinding(DefaultParameterSetName = "Codez")]
+[Alias('azcc')]
 param(
     [Parameter(Mandatory = $false)]
     $ResourceGroupName = "monitoring-rg",

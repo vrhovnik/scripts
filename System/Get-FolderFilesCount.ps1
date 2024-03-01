@@ -16,6 +16,7 @@ get stats for specific folder
 
 #>
 [CmdletBinding(DefaultParameterSetName = "System")]
+[Alias('gfc')]
 param(    
     [Parameter(HelpMessage="Folder to get stats for")]
     [string]$Folder

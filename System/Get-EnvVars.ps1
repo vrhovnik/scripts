@@ -8,6 +8,8 @@ Get and set env files from env file
 
 PS > Get-EnvVars -EnvFile "c:\Work\test.env"
 
+Get a list of environment variables from the test.env file and set them in the current session.
+
 #>
 
 [CmdletBinding(DefaultParameterSetName = "System")]

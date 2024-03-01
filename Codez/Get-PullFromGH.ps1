@@ -32,6 +32,7 @@ http://github.com/vrhovnik
  
 #>
 [CmdletBinding(DefaultParameterSetName = "Codez")]
+[alias('gfgh')]
 param(    
     [Parameter(Mandatory = $false)]
     $RootFolderPath,

@@ -14,6 +14,7 @@ Get last 2 items from Azure Feed and shows them in terminal
 
 #>
 [CmdletBinding(DefaultParameterSetName = "RSS")]
+[alias('rr')]
 param(    
     [Parameter(Position=0)]
     $Link = "https://azurecomcdn.azureedge.net/en-us/blog/feed/",

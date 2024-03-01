@@ -17,6 +17,7 @@ Function Courtsy of: community.idera.com/database-tools/powershell/powertips/b/t
 
 #>
 [CmdletBinding(DefaultParameterSetName = "System")]
+[Alias('mw')]
 param(
     [Parameter(HelpMessage = "Provide the name of the proces to put in front and maximize the window", Mandatory = $true)]
     [string]        
