@@ -41,7 +41,8 @@ param(
 )
 $logPath = "$HOME/Downloads/get-pullfromgh.log"
 Start-Transcript -Path $logPath -Force
-
+# get path you were in
+$GoToDir = Get-Location
 if ($null -eq $RootFolderPath)
 {
     $RootFolderPath = Get-Location    
@@ -65,7 +66,7 @@ $directories | ForEach-Object {
     git pull
     Write-Output "Done git pull in $($_.FullName)"
 }
-Set-Location -Path $RootFolderPath 
+Set-Location -Path $GoToDir
 Write-Output "Running git pull in $numberOfDirectories directories, exiting"
 Stop-Transcript
 if ($ShowLog)
