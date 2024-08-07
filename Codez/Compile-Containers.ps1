@@ -46,19 +46,21 @@ $logPath = "$HOME/Downloads/container-build.log"
 Start-Transcript -Path $logPath -Force
 if ($InstallCli)
 {
-    Start-Process Install-AzCli.ps1 -NoNewWindow -Wait
+    Start-Process ../Azure/Install-AzCli.ps1 -NoNewWindow -Wait
 }
 
 Write-Output "Reading registry $RegistryName in Azure"
 $registry = Get-AzContainerRegistry -ResourceGroupName $ResourceGroupName -Name $RegistryName
-Write-Output "Registry $($registry.Name) has been read"
+$name = $registry.Name
+Write-Output "Registry $name has been read"
 
 Write-Output "Reading the folder $FolderName"
 Get-ChildItem -Path $FolderName | ForEach-Object {
+    $imageRepo = $_.Name.Split('-')[0]
     $imageName = $_.Name.Split('-')[1]
     $dockerFile = $_.FullName
     Write-Output "Building image $imageName with tag $TagName based on $dockerFile"
-    $imageNameWithTag = "$($imageName):$TagName"
+    $imageNameWithTag = "$($name).azurecr.io/$($imageRepo.ToLower())/$($imageName.ToLower()):$($TagName)"
     Write-Output "Taging image with $imageNameWithTag"
     Write-Information "Call data with AZ cli as we don't have support in Azure PowerShell for this yet."
     # you can install by providing the switch -InstallCli 
@@ -67,4 +69,8 @@ Get-ChildItem -Path $FolderName | ForEach-Object {
 Write-Output "Building images done"
 Stop-Transcript
 #read it in notepad
-Start-Process "notepad" -ArgumentList $logPath 
+if ($OpenLog)
+{
+    Write-Information "Opening log file $logPath"
+    Start-Process "notepad" -ArgumentList $logPath
+}

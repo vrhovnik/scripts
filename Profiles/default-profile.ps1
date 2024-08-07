@@ -38,9 +38,10 @@ Function GoToOneBack(){ Set-Location ..}
 Set-Alias -Name .. -Value GoToOneBack
 Function LoadLocalScript(){ 
 	GoToPowershellDir
+	$localDir = Get-Location
 	.\System\Add-DirToSystemEnv.ps1 -RestartCurrentSession
 	Write-Information "Script loaded"
-	Set-Location $HOME
+	Set-Location $localDir
 	Clear-Host
 }
 Set-Alias -Name lls -Value LoadLocalScript
