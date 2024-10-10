@@ -60,7 +60,7 @@ Write-Output "Getting list of directories from $RootFolderPath"
 $directories = Get-ChildItem -Path $RootFolderPath -Directory
 Write-Output "Found $($directories.Count) directories"
 $numberOfDirectories = $directories.Count
-$
+
 $directories | ForEach-Object {
     Write-Output "Doing git pull in $($_.FullName)"
     Set-Location -Path $_.FullName
