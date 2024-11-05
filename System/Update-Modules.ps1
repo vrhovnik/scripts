@@ -18,7 +18,7 @@ Updates all the modules on the system
   
 .EXAMPLE
   
-PS> Get_Meme.ps1 -AllowPrerelease
+PS> Update-Modules -AllowPrerelease
 Updates all the modules on the system to the latest PreRelease version
   
 .LINK
