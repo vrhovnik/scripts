@@ -1,7 +1,8 @@
 <#
     .SYNOPSIS
     This function displays all stored WIFI passwords on the client
-    .DESCRIPTION
+
+    # .DESCRIPTION
     This function gets the output of netsh command and will trim it to display all SSID`s and also the passwords.
     If a profile has no password it will inform the user.
 
