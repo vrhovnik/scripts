@@ -14,21 +14,21 @@ example: NewDb_ConnectionString
 
 .EXAMPLE
 
-PS > New-Database.ps1 -DatabaseName "NewDb" -SaPwd "YourStrong!Passw0rd"
+PS > New-Database.ps1 -DatabaseName "NewDb" 
 
-Creates a new database in a container with docker with name NewDb with random hostname and password for SA.
-
-.EXAMPLE
-
-PS > New-Database.ps1 -DatabaseName "NewDb" -SaPwd "YourStrong!Passw0rd" -Overwrite
-
-Creates a new database in a container with docker with name NewDb and random hostname and password for SA and overwrite existing instances.
+Creates a new database in a container with docker with name NewDb with random hostname. Command line will provide user interface to enter secure password.
 
 .EXAMPLE
 
-PS > New-Database.ps1 -DatabaseName "NewDb" -SaPwd "YourStrong!Passw0rd" -InstanceName "sql1" -Overwrite
+PS > New-Database.ps1 -DatabaseName "NewDb" -Overwrite
 
-Creates a new database in a container with docker with name NewDb and instance name sql1 and password for SA and overwrite existing instances.
+Creates a new database in a container with docker with name NewDb and random hostname and password for SA and overwrite existing instances. You will need to enter secure password.
+
+.EXAMPLE
+
+PS > New-Database.ps1 -DatabaseName "NewDb" -InstanceName "sql1" -Overwrite
+
+Creates a new database in a container with docker with name NewDb and instance name sql1 and overwrite existing instances. You will need to enter secure password.
 
 . LINK
 
@@ -103,6 +103,17 @@ if ($existingContainer) {
         return
     }
 } 
+
+# List of action movie inspired names (lowercase, max 10 chars)
+$actionNames = @(
+    "matrix", "rambo", "bond", "blade", "rocky", "neo", "trinity", "maxpayne", "johnwick", "leeloo", "ripley", "mclane", "conan", "predator", "terminat0r"
+)
+
+if (-not $InstanceName) {
+    $random = Get-Random -Minimum 0 -Maximum $actionNames.Count
+    $InstanceName = $actionNames[$random]
+    Write-Output "No instance name provided. Generated random name: $InstanceName"
+}
 
 Write-Output "No existing container named $InstanceName, continuing creating new one."
 $plainPwd = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($SaPwd))
