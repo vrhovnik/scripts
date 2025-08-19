@@ -9,6 +9,9 @@ Search the cheat sheet website cheat.sh and give back the result in pwsh
 PS > Search-CheatSheet "pwsh"
 Searches for the "pwsh" application, and then give back the result
 
+.LINK
+
+http://github.com/vrhovnik
 
 #>
 [CmdletBinding(DefaultParameterSetName = "Codez")]

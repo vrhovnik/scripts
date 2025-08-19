@@ -16,6 +16,10 @@ Removes bin,obj folders from provided directory. If directory is not provided, c
 Author for this script is Ardalis on below link:
 https://ardalis.com/delete-bin-obj-folders-recursively/
 
+.LINK
+
+http://github.com/vrhovnik
+
 #>
 [CmdletBinding(DefaultParameterSetName = "Codez")]
 [alias('rbo')]
