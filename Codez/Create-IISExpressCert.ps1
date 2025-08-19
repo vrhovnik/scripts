@@ -1,4 +1,30 @@
+<#
 
+ .SYNOPSIS
+
+Create IIS Express Development Certificate
+
+.DESCRIPTION
+
+Create a self-signed certificate for IIS Express development
+
+.EXAMPLE
+
+PS > Create-IISExpressCert.ps1
+
+Creates a new self-signed certificate for IIS Express development
+
+.EXAMPLE
+
+PS > Create-IISExpressCert.ps1 -FriendlyName "MyDevCert"
+
+Creates a new self-signed certificate for IIS Express development with the specified friendly name
+
+.LINK
+
+http://github.com/vrhovnik
+
+#>
 
 $friendlyName = "IIS Express Development Certificate"
 $certStore = "Cert:\LocalMachine\My"

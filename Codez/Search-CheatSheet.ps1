@@ -21,7 +21,7 @@ param(
 
 Set-StrictMode -Version 3
 try {
-Invoke-WebRequest cheat.sh/$Query | Select-Object -ExpandProperty Content
+    Invoke-WebRequest cheat.sh/$Query | Select-Object -ExpandProperty Content
 }
 catch{
 	Write-Out "There has been an error by calling cheat.sh. Check errors"
