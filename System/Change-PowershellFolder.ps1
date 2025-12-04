@@ -52,7 +52,7 @@ Write-Host "Admin right confirmed. Checking $Path if it exists."
 if (-Not (Test-Path -Path $Path)) {
     if ($CreateIfNotExists) {        
         New-Item -ItemType Directory -Path $Path -Force | Out-Null
-        Write-Host "Created folder: $Path"
+        Write-Host ("Created folder: $Path") -ForegroundColor Green
     }
     else {
         Write-Verbose "Path does not exist and CreateIfNotExists flag is not set."
@@ -73,11 +73,12 @@ function Copy-Profile {
     if (Test-Path -Path $SourceProfilePath) {
         $DestinationProfilePath = Join-Path -Path $DestinationFolderPath -ChildPath (Split-Path -Leaf $SourceProfilePath)
         Copy-Item -Path $SourceProfilePath -Destination $DestinationProfilePath -Force
-        Write-Host "Copied profile script to: $DestinationProfilePath"
+        Write-Host ("Copied profile script to: $DestinationProfilePath") -ForegroundColor Green
     }
     else {
         Write-Host "No profile script found at: $SourceProfilePath. Creating a new one at the new location."
         New-Item -ItemType File -Path (Join-Path -Path $DestinationFolderPath -ChildPath (Split-Path -Leaf $SourceProfilePath)) -Force | Out-Null
+        Write-Host ("Added new profile script at: $DestinationFolderPath") -ForegroundColor Green
     }
 }
 
@@ -97,10 +98,10 @@ function Add-FolderIfMissing {
     if (-not (Test-Path -Path $FullSoftwarePath)) {
         # Create folder if missing
         New-Item -ItemType Directory -Path $FullSoftwarePath -Force | Out-Null
-        Write-Host "Created PowerShell folder: $FullSoftwarePath"
+        Write-Host ("Created PowerShell folder: $FullSoftwarePath") -ForegroundColor Green
     }
     else {
-        Write-Host "PowerShell folder exists: $FullSoftwarePath"
+        Write-Host ("PowerShell folder exists: $FullSoftwarePath") -ForegroundColor Green
     }
 
     # Return the full path for further use
@@ -121,18 +122,18 @@ function Copy-ExistingDirectories {
         Get-ChildItem -Path $SourcePath -Directory | ForEach-Object {
             $DestinationDir = Join-Path -Path $DestinationPath -ChildPath $_.Name
             Copy-Item -Path $_.FullName -Destination $DestinationDir -Recurse -Force
-            Write-Host "Copied directory: $($_.FullName) to $DestinationDir"
+            Write-Host ("Copied directory: $($_.FullName) to $DestinationDir") -ForegroundColor Green
         }
     }
     else {
-        Write-Host "Source directory does not exist: $SourcePath"
+        Write-Host ("Source directory does not exist: $SourcePath") -ForegroundColor Yellow
     }
 }
 
 Set-Location -Path $Path
 Write-Host "Setting the new PowerShell folder path in the registry."
 New-ItemProperty 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders' Personal -Value $Path -Type ExpandString -Force
-Write-Host "New PowerShell folder path set in the registry. Adding PowerShell folders if missing."
+Write-Host ("New PowerShell folder path set in the registry. Adding PowerShell folders if missing.") -ForegroundColor Green
 
 $pwshCorePath = Add-FolderIfMissing -Path $Path -SoftwareName "PowerShell" 
 Write-Host "Setting the new PowerShell Core folder path."
@@ -150,9 +151,9 @@ if ($CopyProfile) {
 else {
     Write-Host "Skipping profile script copy as CopyProfile flag is not set and creating new clean profile."
     New-Item -ItemType File -Path (Join-Path -Path $pwshCorePath -ChildPath (Split-Path -Leaf $profilePath)) -Force | Out-Null
-    Write-Host "Added PowerShell Core profile script at: $pwshCorePath"
+    Write-Host ("Added PowerShell Core profile script at: $pwshCorePath") -ForegroundColor Green
     New-Item -ItemType File -Path (Join-Path -Path $pwshWindowsPath -ChildPath (Split-Path -Leaf $profilePath)) -Force | Out-Null
-    Write-Host "Added Windows PowerShell profile script at: $pwshWindowsPath"    
+    Write-Host ("Added Windows PowerShell profile script at: $pwshWindowsPath") -ForegroundColor Green
     
 }
 
@@ -168,11 +169,10 @@ if ($CopyDirectories) {
 }
 
 Write-Host "************************************************************************************************************************************************"
-Write-Host "Done with changing the path for PowerShell folder. Restart PowerShell to see the changes. " 
+Write-Host ("Done with changing the path for PowerShell folder. Restart PowerShell to see the changes. ") -ForegroundColor Green
 Write-Host ""
 Write-Host "************************************************************************************************************************************************"
 Write-Host ""
-Read-Host -Prompt "Press Enter to continue"
+Read-Host -Prompt "Press Enter to reload profile - it will open the profile in a new PowerShell window"
 Start-Process powershell -ArgumentList '-NoExit', '-Command', 'cat $PROFILE'
 exit
-
