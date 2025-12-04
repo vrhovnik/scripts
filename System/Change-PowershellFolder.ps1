@@ -20,17 +20,25 @@ Changes the current PowerShell folder to C:\Work and creates the folder if it do
 PS > Change-PowershellFolder -Path "C:\Work" -CreateIfNotExists -CopyProfile
 Changes the current PowerShell folder to C:\Work and creates the folder if it does not exist. Also copies the profile script if it exists.
 
+.EXAMPLE
+
+PS > Change-PowershellFolder -Path "C:\Work" -CreateIfNotExists -CopyProfile -CopyDirectories
+Changes the current PowerShell folder to C:\Work and creates the folder if it does not exist. Also copies the profile script if it exists. 
+Also copies the directories if flag is specified.
+
 .DESCRIPTION
 Changes the current PowerShell folder to a specified path and copies the profile script if it exists (does both for PowerShell core and PowerShell Windows)
 If the path does not exist, it will output an error message. If you set flag CreateIfNotExist, it will create the folder if it does not exist. 
+CopyDirectories flag is reserved for future use to copy existing directories to the new location.
 
 #>
 [CmdletBinding(DefaultParameterSetName = "System")]
 param(    
     [Parameter(HelpMessage = "Path to change the current PowerShell folder to", Mandatory = $true)]
     [string]$Path,
-    [switch]$CreateIfNotExists,
-    [switch]$CopyProfile
+    [switch(HelpMessage = "Create the folder if it does not exist")]$CreateIfNotExists,
+    [switch(HelpMessage = "Copy the profile script if it exists")]$CopyProfile,
+    [switch(HelpMessage = "Copy existing directories to the new location")]$CopyDirectories
 )
 
 Write-Host "************************************************************************************************************************************************"
@@ -40,13 +48,14 @@ If (!([Security.Principal.WindowsPrincipal]	[Security.Principal.WindowsIdentity]
     Exit
 }
 
-Write-Verbose "Admin right confirmed. Checking $Path if it exists."
+Write-Host "Admin right confirmed. Checking $Path if it exists."
 if (-Not (Test-Path -Path $Path)) {
-    if ($CreateIfNotExist) {
+    if ($CreateIfNotExists) {        
         New-Item -ItemType Directory -Path $Path -Force | Out-Null
         Write-Host "Created folder: $Path"
     }
     else {
+        Write-Verbose "Path does not exist and CreateIfNotExists flag is not set."
         Write-Error "The specified path does not exist: $Path"
         return
     }
@@ -98,24 +107,39 @@ function Add-FolderIfMissing {
     return $FullSoftwarePath
 }
 
+function Copy-ExistingDirectories {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$SourcePath,
+        [Parameter(Mandatory = $true)]
+        [string]$DestinationPath
+    )
+
+    # Check if source directory exists
+    if (Test-Path -Path $SourcePath) {
+        # Copy all directories and their contents
+        Get-ChildItem -Path $SourcePath -Directory | ForEach-Object {
+            $DestinationDir = Join-Path -Path $DestinationPath -ChildPath $_.Name
+            Copy-Item -Path $_.FullName -Destination $DestinationDir -Recurse -Force
+            Write-Host "Copied directory: $($_.FullName) to $DestinationDir"
+        }
+    }
+    else {
+        Write-Host "Source directory does not exist: $SourcePath"
+    }
+}
+
 Set-Location -Path $Path
 Write-Host "Setting the new PowerShell folder path in the registry."
 New-ItemProperty 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders' Personal -Value $Path -Type ExpandString -Force
 Write-Host "New PowerShell folder path set in the registry. Adding PowerShell folders if missing."
+
 $pwshCorePath = Add-FolderIfMissing -Path $Path -SoftwareName "PowerShell" 
 Write-Host "Setting the new PowerShell Core folder path."
 $pwshWindowsPath = Add-FolderIfMissing -Path $Path -SoftwareName "WindowsPowerShell" 
 Write-Host "Setting the new Windows PowerShell folder path."
 
-if (-Not $CopyProfile) {
-    Write-Host "Skipping profile script copy as CopyProfile flag is not set and creating new clean profile."
-    New-Item -ItemType File -Path (Join-Path -Path $pwshCorePath -ChildPath (Split-Path -Leaf $profilePath)) -Force | Out-Null
-    Write-Host "Added PowerShell Core profile script at: $pwshCorePath"
-    New-Item -ItemType File -Path (Join-Path -Path $pwshWindowsPath -ChildPath (Split-Path -Leaf $profilePath)) -Force | Out-Null
-    Write-Host "Added Windows PowerShell profile script at: $pwshWindowsPath"
-    return
-}
-else {
+if ($CopyProfile) {
     Write-Host "Proceeding to copy profile scripts or create new ones."    
     $winPSProfile = Join-Path $env:USERPROFILE 'Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'
     Write-Host "Checking for profile script at: $winPSProfile and copying it to the $pwshWindowsPath"
@@ -123,6 +147,26 @@ else {
     $corePSProfile = Join-Path $env:USERPROFILE 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
     Copy-Profile -SourceProfilePath $corePSProfile -DestinationFolderPath $pwshCorePath
 }
+else {
+    Write-Host "Skipping profile script copy as CopyProfile flag is not set and creating new clean profile."
+    New-Item -ItemType File -Path (Join-Path -Path $pwshCorePath -ChildPath (Split-Path -Leaf $profilePath)) -Force | Out-Null
+    Write-Host "Added PowerShell Core profile script at: $pwshCorePath"
+    New-Item -ItemType File -Path (Join-Path -Path $pwshWindowsPath -ChildPath (Split-Path -Leaf $profilePath)) -Force | Out-Null
+    Write-Host "Added Windows PowerShell profile script at: $pwshWindowsPath"    
+    
+}
+
+if ($CopyDirectories) {
+    Write-Host "Copying existing directories with content from Powershell Directory."
+    $windowsPath = Join-Path $env:USERPROFILE 'Documents\WindowsPowerShell\*' 
+    Write-Host "Copying directories from $windowsPath to $pwshWindowsPath"
+    Copy-ExistingDirectories -SourcePath $windowsPath -DestinationPath $pwshWindowsPath
+    $powerShellPath = Join-Path $env:USERPROFILE 'Documents\PowerShell\*'
+    Write-Host "Copying directories from $powerShellPath to $pwshCorePath"
+    Copy-ExistingDirectories -SourcePath $powerShellPath -DestinationPath $pwshCorePath
+    Write-Host "Finished copying existing directories."
+}
+
 Write-Host "************************************************************************************************************************************************"
 Write-Host "Done with changing the path for PowerShell folder. Restart PowerShell to see the changes. " 
 Write-Host ""
