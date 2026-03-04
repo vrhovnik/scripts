@@ -1,52 +1,95 @@
-# Scripts I use daily on my Windows machine with PowerShell
+# Scripts I Use Daily
 
-Scripts I use daily, some authored, some borrowed from respective authors by their permission or by them sharing scripts publically.
+[![PowerShell](https://img.shields.io/badge/PowerShell-7%2B-blue?logo=powershell)](https://learn.microsoft.com/en-us/powershell/scripting/overview)
+[![Platform](https://img.shields.io/badge/Platform-Windows-informational?logo=windows)](https://www.microsoft.com/windows)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Scripts are built in different folders, and are called from the root folder:
+A curated collection of PowerShell scripts for everyday tasks: Azure management, development tooling, container management, RSS reading, system administration, and more.
 
-1. *Azure* - scripts to help with Azure tasks (you will need to have [Azure Module](https://learn.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-9.5.0) installed)
-2. *Codez* - scripts to be used for coding assistance
-3. *Random* - random scripts to get weather info, to help with other tasks
-4. *System* - scripts to help with system administration like reading and setting env files, getting installed software, etc.
-5. *RSS* - scripts to help with RSS feeds - read rss feeds, get latest news, etc.
+Scripts are organized into folders by topic. Add the root folder (and all subfolders) to your system `PATH` using the provided [`Add-DirToSystemEnv.ps1`](/System/Add-DirToSystemEnv.ps1) script so you can call any script by name from any directory.
 
-To run the scripts you will need to have PowerShell installed on your machine. You can download it from [here](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell). I recommmend using [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) and [PowerToys](https://www.microsoft.com/en-us/powertoys/).
+## 📁 Folder Structure
 
-## Adding scripts to your system path
+| Folder | Description | README |
+|--------|-------------|--------|
+| [Azure](Azure/) | Azure management scripts (VMs, networking, App Insights, email) | [Azure/README.md](Azure/README.md) |
+| [Codez](Codez/) | Development tools (build cleanup, Git pull, cheat sheets, containers) | [Codez/README.md](Codez/README.md) |
+| [Containers](Containers/) | Docker container management (SQL Server in containers) | [Containers/README.md](Containers/README.md) |
+| [Kubernetes](Kubernetes/) | Kubernetes command references | [Kubernetes/README.md](Kubernetes/README.md) |
+| [Office](Office/) | Office document automation (extract images from Word) | [Office/README.md](Office/README.md) |
+| [Profiles](Profiles/) | PowerShell profile configuration | [Profiles/README.md](Profiles/README.md) |
+| [Random](Random/) | Miscellaneous utilities (weather, text-to-speech) | [Random/README.md](Random/README.md) |
+| [RSS](RSS/) | RSS feed reader for the terminal | [RSS/README.md](RSS/README.md) |
+| [System](System/) | System administration (PATH, env vars, software management) | [System/README.md](System/README.md) |
 
-If you want for example run [Read-RssFeed.ps1](/RSS/Read-Rss.ps1), you would write Read-Rss.ps1 in your terminal:
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [PowerShell 7+](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell) — download and install for your platform
+- [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) — recommended terminal (Windows)
+- [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/install) — optional but recommended on Windows
+
+### Adding scripts to your PATH
+
+To call scripts from anywhere without specifying the full path, add the repository root and all subfolders to your `PATH`:
+
+```powershell
+.\System\Add-DirToSystemEnv.ps1 -PathToAdd "C:\path\to\scripts" -RestartCurrentSession
+```
+
+After running this, you can call any script by name:
 
 ```powershell
 Read-Rss.ps1
+Get-WeatherInfo.ps1
+Remove-ObjBin.ps1
 ```
 
-PowerShell doesn't know where this script is located and you will get this error:
+**Before:**
 
 ![Script not found](https://webeudatastorage.blob.core.windows.net/web/read-script-not-found-error.png)
 
-To fix this, you need to add the root folder to your system path. You can do this manually, but I have a script for that. You can find it [here](/System/Add-DirToSystemEnv.ps1). You can run it from the root folder, or from any other folder. It will add the root folder and all sub-folders to your system path.
-
-```powershell
-Add-DirToSystemEnv.ps1 -RestartCurrentSession
-```
-
-The result is the following:
+**After:**
 
 ![Scripts added to system path](https://webeudatastorage.blob.core.windows.net/web/read-script-added-to-env-path.png)
 
-## Additional links
+### Azure scripts
+
+Azure scripts require the [Azure PowerShell module](https://learn.microsoft.com/en-us/powershell/azure/install-az-ps):
 
 ```powershell
-
-$powershell-docs = Start-Process "https://go.azuredemos.net/docs-pwsh-home"
-$powershell-github = Start-Process "https://github.com/PowerShell/PowerShell.git"
-$windows-terminal = Start-Process "https://go.azuredemos.net/docs-terminal-home"
-$windows-terminal-github-page = Start-Process "https://github.com/microsoft/terminal.git"
-$powershell-module-considerations = Start-Process "https://learn.microsoft.com/en-us/powershell/scripting/dev-cross-plat/performance/module-authoring-considerations?view=powershell-7.3"
-
+Install-Module -Name Az -Scope CurrentUser -Force
+Connect-AzAccount
 ```
 
-# Contributing
+## 🧪 Running Tests
+
+Each folder that contains scripts has a `tests/` subfolder with [Pester](https://pester.dev/) tests.
+
+```powershell
+# Run tests for a single folder
+Invoke-Pester -Path .\Azure\tests\Azure.Tests.ps1 -Output Detailed
+
+# Run all tests
+Invoke-Pester -Path .\Azure\tests, .\Codez\tests, .\Containers\tests, .\Office\tests, .\RSS\tests, .\Random\tests, .\System\tests -Output Normal
+```
+
+Tests validate script syntax, parameter definitions, help content, and (where possible) functional behavior — without requiring Azure credentials or external services.
+
+## 📚 Additional Resources
+
+| Resource | Link |
+|----------|------|
+| PowerShell documentation | [learn.microsoft.com/powershell](https://learn.microsoft.com/en-us/powershell/scripting/overview) |
+| PowerShell GitHub repository | [github.com/PowerShell/PowerShell](https://github.com/PowerShell/PowerShell) |
+| Windows Terminal | [learn.microsoft.com/windows/terminal](https://learn.microsoft.com/en-us/windows/terminal/) |
+| Windows Terminal GitHub | [github.com/microsoft/terminal](https://github.com/microsoft/terminal) |
+| PowerShell module authoring tips | [Module authoring considerations](https://learn.microsoft.com/en-us/powershell/scripting/dev-cross-plat/performance/module-authoring-considerations?view=powershell-7.3) |
+| Azure PowerShell | [learn.microsoft.com/powershell/azure](https://learn.microsoft.com/en-us/powershell/azure/) |
+| Pester testing framework | [pester.dev](https://pester.dev/) |
+
+## 🤝 Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
