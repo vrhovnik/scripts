@@ -50,36 +50,23 @@ Function LoadLocalScript() {
 
 # pull from github from subfolders
 Set-Alias -Name gpull -Value ExecuteGhPullWithSubfolders
-function ExecuteGhPullWithSubfolders() {
-	$originalDir = Get-Location	
+function ExecuteGhPullWithSubfolders([bool]$DiscardChanges = $true) {
+	$originalDir = Get-Location
+	$scriptPath = "$ENV:WORKDIR\Projects\my-scripts\Codez\Get-PullFromGH.ps1"
 	Write-Information "Going to github directory"
 	GoToGithub
 	Write-Output "Executing git pull in all subfolders"
 	$directories = Get-ChildItem -Path $PWD -Directory
 	$numberOfDirectories = $directories.Count
 	Write-Output "Found $($numberOfDirectories) sub directories to pull from GitHub"
-	$allDirectories = 0;
+	$allDirectories = 0
 	$directories | ForEach-Object {
-		Write-Output  "Doing git pull in $($_.FullName)"
-		Set-Location -Path $_.FullName
-		$gDirectories = Get-ChildItem -Path $PWD -Directory
-		$numberOfDirectories = $gDirectories.Count
-		Write-Output "Found $($numberOfDirectories) directories to pull from GitHub"
-		$gDirectories | ForEach-Object {
-			Write-Information "Doing git pull in $($_.FullName)"
-			Set-Location -Path $_.FullName
-			$gitStatus = git status
-			if ($gitStatus -match "Your branch is up to date") {
-				Write-Output  "No changes to pull from GitHub in $($_.FullName)"
-			}
-			else {
-				Write-Information "Pulling changes from GitHub"
-				git pull
-			}
-		}
-		$allDirectories += $numberOfDirectories	
-	}	
-	Write-output "Finished pulling from $($allDirectories) directories."
+		Write-Output "Doing git pull in $($_.FullName)"
+		$gDirectories = Get-ChildItem -Path $_.FullName -Directory
+		$allDirectories += $gDirectories.Count
+		& $scriptPath -RootFolderPath $_.FullName -DiscardChanges $DiscardChanges
+	}
+	Write-Output "Finished pulling from $($allDirectories) directories."
 	Write-Output "Going back to the original directory"
 	Set-Location -Path $originalDir
 	Write-Output "Finished pulling from GitHub"
