@@ -8,6 +8,8 @@ PowerShell profile scripts for customizing your shell environment.
 
 A ready-to-use PowerShell profile that sets up a productive development environment on Windows. Copy the contents of this file (or include it with `. $HOME\path\to\default-profile.ps1`) in your `$PROFILE` file.
 
+The profile now supports an optional `-ScriptsRepoPath` parameter so it can be reused across machines without editing hardcoded repository paths.
+
 ## What the profile sets up
 
 ### Environment Variables
@@ -71,6 +73,12 @@ notepad $PROFILE
 
 ```powershell
 . "C:\path\to\scripts\Profiles\default-profile.ps1"
+```
+
+Or pass an explicit scripts repository path:
+
+```powershell
+. "C:\path\to\scripts\Profiles\default-profile.ps1" -ScriptsRepoPath "C:\path\to\scripts"
 ```
 
 3. Reload your profile:
