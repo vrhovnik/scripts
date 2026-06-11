@@ -22,6 +22,72 @@ Scripts are organized into folders by topic. Add the root folder (and all subfol
 | [RSS](RSS/) | RSS feed reader for the terminal | [RSS/README.md](RSS/README.md) |
 | [System](System/) | System administration (PATH, env vars, software management) | [System/README.md](System/README.md) |
 
+## 🔎 Script Launcher (new)
+
+Use the launcher to search scripts, preview docs, and run them from one place:
+
+```powershell
+.\System\Invoke-ScriptLauncher.ps1
+```
+
+Optional examples:
+
+```powershell
+# Start with a filter
+.\System\Invoke-ScriptLauncher.ps1 -Search "azure"
+
+# Preview docs only (no execution prompt)
+.\System\Invoke-ScriptLauncher.ps1 -PreviewOnly
+```
+
+## 🗂️ Complete Script Index
+
+| Script | Category | Summary |
+|--------|----------|---------|
+| [Connect-RemoteToVM.ps1](Azure/Connect-RemoteToVM.ps1) | Azure | Connect via PS remote to VM in Azure |
+| [Create-AzureAdApplication.ps1](Azure/Create-AzureAdApplication.ps1) | Azure | Create Azure Ad application interactievly inside Azure Ad tenant |
+| [Enable-PSRemote.ps1](Azure/Enable-PSRemote.ps1) | Azure | Enable PS remote on VM in Azure |
+| [Get-Admins.ps1](Azure/Get-Admins.ps1) | Azure | Getting administrators, owners, coadmins of Azure Subscription |
+| [Get-AppInsightsTypes.ps1](Azure/Get-AppInsightsTypes.ps1) | Azure | Identify the Application Insights type by ingestion type |
+| [Get-AppSecurityKeyExpiration.ps1](Azure/Get-AppSecurityKeyExpiration.ps1) | Azure | Check if there are any applications with security key expiration in the next days |
+| [Get-IpAddressesFromServiceTag.ps1](Azure/Get-IpAddressesFromServiceTag.ps1) | Azure | Getting back IP address ranges for specific Azure service |
+| [Get-VmNSG.ps1](Azure/Get-VmNSG.ps1) | Azure | get NSG associated with VM and details of the NSG |
+| [Install-AZCLI.ps1](Azure/Install-AZCLI.ps1) | Azure | install oz cli if you don't have it installed locally |
+| [Send-Email.ps1](Azure/Send-Email.ps1) | Azure | Send email via Microsoft Graph from current signed in user |
+| [Set-ApplicationInsightRetention.ps1](Azure/Set-ApplicationInsightRetention.ps1) | Azure | change retention for application insights |
+| [Start-Machine.ps1](Azure/Start-Machine.ps1) | Azure | Start virtual machine in Azure |
+| [Compile-Containers.ps1](Codez/Compile-Containers.ps1) | Codez | Compile containers inside the folder containers with az cli |
+| [Create-IISExpressCert.ps1](Codez/Create-IISExpressCert.ps1) | Codez | Create IIS Express Development Certificate |
+| [executecs.bat](Codez/executecs.bat) | Codez | executecs.bat is a batch script to execute a C# script file using .NET |
+| [Get-PullFromGH.ps1](Codez/Get-PullFromGH.ps1) | Codez | Do Git Pull every folder inside root folder from GitHub |
+| [Remove-ObjBin.ps1](Codez/Remove-ObjBin.ps1) | Codez | Removes bin,obj folders from provided directory |
+| [Search-CheatSheet.ps1](Codez/Search-CheatSheet.ps1) | Codez | Search the cheat sheet website cheat.sh and give back the result in pwsh |
+| [New-Database.ps1](Containers/New-Database.ps1) | Containers | Create new database in a docker container and stores the connection string in environment variable / clipboard |
+| [useful-commands.info](Kubernetes/useful-commands.info) | Kubernetes | copied from https://dev.to/zenika/kubernetes-a-pragmatic-kubectl-aliases-collection-17oc |
+| [Export-ImagesFromWord.ps1](Office/Export-ImagesFromWord.ps1) | Office | Extracts images from a Word document and copies them to a new location |
+| [default-profile.ps1](Profiles/default-profile.ps1) | Profiles | Default PowerShell profile template for this scripts repository. |
+| [Get-WeatherInfo.ps1](Random/Get-WeatherInfo.ps1) | Random | Get weather from wttr.in and show it in RSS |
+| [Speak-Text.ps1](Random/Speak-Text.ps1) | Random | Speaks provided text |
+| [Read-Rss.ps1](RSS/Read-Rss.ps1) | RSS | Read last specific number of RSS item feed and shows it in a terminal |
+| [Add-DirToSystemEnv.ps1](System/Add-DirToSystemEnv.ps1) | System | Add path to system environment variables |
+| [Change-PowershellFolder.ps1](System/Change-PowershellFolder.ps1) | System | Change the current PowerShell folder to a specified path (does both for PowerShell core and PowerShell Windows). |
+| [Count-FilePages.ps1](System/Count-FilePages.ps1) | System | Read pdf and docx files in a folder and its subfolders to get page counts. |
+| [Get-EnvFromFile.ps1](System/Get-EnvFromFile.ps1) | System | Get values from .env file and store them to environment variables |
+| [Get-EnvVars.ps1](System/Get-EnvVars.ps1) | System | Get and set env files from env file |
+| [Get-FolderFilesCount.ps1](System/Get-FolderFilesCount.ps1) | System | Get directories and files count |
+| [Get-InstalledSoftware.ps1](System/Get-InstalledSoftware.ps1) | System | Get installed software list |
+| [Get-MyFolderItem.ps1](System/Get-MyFolderItem.ps1) | System | use the function to get a list of files and directories in a folder, sorted by last write time |
+| [Get-ScriptCatalog.ps1](System/Get-ScriptCatalog.ps1) | System | Builds a script catalog for this repository. |
+| [Get-UpTime.ps1](System/Get-UpTime.ps1) | System | Get uptime for the system |
+| [Get-WifiPassword.ps1](System/Get-WifiPassword.ps1) | System | This function displays all stored WIFI passwords on the client |
+| [Initialize-ScriptPrerequisites.ps1](System/Initialize-ScriptPrerequisites.ps1) | System | Checks and optionally installs prerequisites for this scripts repository. |
+| [Invoke-ScriptLauncher.ps1](System/Invoke-ScriptLauncher.ps1) | System | Interactive script launcher with search, docs preview, and execution. |
+| [Max-Window.ps1](System/Max-Window.ps1) | System | maximizes the window of the process |
+| [Search-StartMenu.ps1](System/Search-StartMenu.ps1) | System | Search the Start Menu for items that match the provided text. This script |
+| [Sync-TimeWithWindows.ps1](System/Sync-TimeWithWindows.ps1) | System | This function synchronizes the system time with the Windows time service. |
+| [Update-Modules.ps1](System/Update-Modules.ps1) | System | Updates all the modules on the system |
+| [Update-Software.ps1](System/Update-Software.ps1) | System | Updates all the software on the system with chocolatey and winget with one command. |
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -29,6 +95,16 @@ Scripts are organized into folders by topic. Add the root folder (and all subfol
 - [PowerShell 7+](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell) — download and install for your platform
 - [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) — recommended terminal (Windows)
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/install) — optional but recommended on Windows
+
+Validate (and optionally install) key repository prerequisites:
+
+```powershell
+# Check only
+.\System\Initialize-ScriptPrerequisites.ps1
+
+# Check + install missing modules + Azure CLI (if missing)
+.\System\Initialize-ScriptPrerequisites.ps1 -InstallMissingModules -InstallAzureCli
+```
 
 ### Adding scripts to your PATH
 
@@ -62,6 +138,18 @@ Azure scripts require the [Azure PowerShell module](https://learn.microsoft.com/
 Install-Module -Name Az -Scope CurrentUser -Force
 Connect-AzAccount
 ```
+
+## 🛠️ Optimization findings and proposed next pass
+
+Implemented in this pass:
+- Added a catalog-driven script discovery flow (`Get-ScriptCatalog.ps1` + `Invoke-ScriptLauncher.ps1`).
+- Added prerequisites bootstrap (`Initialize-ScriptPrerequisites.ps1`).
+- Modernized `Profiles/default-profile.ps1` to remove hardcoded repo paths and add safer module loading.
+
+Proposed follow-up optimizations:
+1. Normalize help text quality in legacy scripts (fix typos, line wraps, and terse synopsis text).
+2. Add `#requires` metadata where platform/runtime assumptions are strict.
+3. Reduce script overlap (`Get-EnvFromFile.ps1` vs `Get-EnvVars.ps1`) by consolidating shared logic.
 
 ## 🧪 Running Tests
 

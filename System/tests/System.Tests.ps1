@@ -351,6 +351,80 @@ Describe "Update-Modules.ps1" {
     }
 }
 
+Describe "Get-ScriptCatalog.ps1" {
+    BeforeAll {
+        $scriptPath = Join-Path $systemScriptsPath "Get-ScriptCatalog.ps1"
+        $script:params = Get-ScriptParameters -ScriptPath $scriptPath
+    }
+
+    Context "Parameter validation" {
+        It "Should have RootPath parameter" {
+            $script:params | Should -Contain "RootPath"
+        }
+
+        It "Should have AsJson parameter" {
+            $script:params | Should -Contain "AsJson"
+        }
+    }
+
+    Context "Functional: catalog generation" {
+        It "Should return script metadata objects" {
+            $result = & $scriptPath
+            $result | Should -Not -BeNullOrEmpty
+            $result[0].PSObject.Properties.Name | Should -Contain "RelativePath"
+            $result[0].PSObject.Properties.Name | Should -Contain "Synopsis"
+        }
+    }
+}
+
+Describe "Initialize-ScriptPrerequisites.ps1" {
+    BeforeAll {
+        $scriptPath = Join-Path $systemScriptsPath "Initialize-ScriptPrerequisites.ps1"
+        $script:params = Get-ScriptParameters -ScriptPath $scriptPath
+    }
+
+    Context "Parameter validation" {
+        It "Should have InstallMissingModules parameter" {
+            $script:params | Should -Contain "InstallMissingModules"
+        }
+
+        It "Should have InstallAzureCli parameter" {
+            $script:params | Should -Contain "InstallAzureCli"
+        }
+    }
+
+    Context "Help content" {
+        It "Should have a Synopsis" {
+            $content = Get-Content $scriptPath -Raw
+            $content | Should -Match '\.SYNOPSIS'
+        }
+    }
+}
+
+Describe "Invoke-ScriptLauncher.ps1" {
+    BeforeAll {
+        $scriptPath = Join-Path $systemScriptsPath "Invoke-ScriptLauncher.ps1"
+        $script:params = Get-ScriptParameters -ScriptPath $scriptPath
+    }
+
+    Context "Parameter validation" {
+        It "Should have Search parameter" {
+            $script:params | Should -Contain "Search"
+        }
+
+        It "Should have PreviewOnly parameter" {
+            $script:params | Should -Contain "PreviewOnly"
+        }
+    }
+
+    Context "Help content" {
+        It "Should have a Synopsis" {
+            $content = Get-Content $scriptPath -Raw
+            $content | Should -Match '\.SYNOPSIS'
+        }
+    }
+}
+
 Describe "All System scripts help content" {
     $systemScripts = Get-ChildItem -Path "$systemScriptsPath" -Filter "*.ps1" |
         ForEach-Object { @{ Name = $_.Name; Path = $_.FullName } }

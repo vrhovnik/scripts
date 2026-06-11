@@ -7,6 +7,7 @@ PowerShell scripts for Windows system administration: managing environment varia
 - [PowerShell 7+](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
 - Some scripts require **administrator privileges** (`Update-Modules.ps1`, `Update-Software.ps1`, `Sync-TimeWithWindows.ps1`)
 - Some scripts are **Windows only** (`Get-InstalledSoftware.ps1`, `Get-WifiPassword.ps1`, `Get-UpTime.ps1`, `Max-Window.ps1`, `Sync-TimeWithWindows.ps1`)
+- For repository-wide setup checks, use `Initialize-ScriptPrerequisites.ps1`
 
 ## Scripts
 
@@ -135,6 +136,51 @@ gfi -Path C:\scripts -Directory -Recurse | Select-Object -Last 3
 ```
 
 📖 [Get-ChildItem documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-childitem)
+
+---
+
+### `Get-ScriptCatalog.ps1`
+
+Builds a catalog of scripts in this repository (name, path, category, summary, runnable state).
+
+```powershell
+# Return objects
+Get-ScriptCatalog.ps1
+
+# Return JSON
+Get-ScriptCatalog.ps1 -AsJson
+```
+
+---
+
+### `Initialize-ScriptPrerequisites.ps1`
+
+Checks required/recommended prerequisites across this repository and can optionally install missing modules/Azure CLI.
+
+```powershell
+# Check only
+Initialize-ScriptPrerequisites.ps1
+
+# Install missing modules and Azure CLI when missing
+Initialize-ScriptPrerequisites.ps1 -InstallMissingModules -InstallAzureCli
+```
+
+---
+
+### `Invoke-ScriptLauncher.ps1`
+
+Interactive launcher to search scripts, preview documentation, and execute selected entries.
+
+```powershell
+# Interactive search and execution
+Invoke-ScriptLauncher.ps1
+
+# Start with a filter
+Invoke-ScriptLauncher.ps1 -Search "azure"
+
+# Preview docs only
+Invoke-ScriptLauncher.ps1 -PreviewOnly
+```
 
 ---
 
