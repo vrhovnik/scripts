@@ -252,6 +252,41 @@ Describe "Get-MyFolderItem.ps1" {
     }
 }
 
+Describe "Get-FormattedItems.ps1" {
+    BeforeAll {
+        $scriptPath = Join-Path $systemScriptsPath "Get-FormattedItems.ps1"
+        . $scriptPath
+        $tmpPath = [System.IO.Path]::GetTempPath()
+        $script:testPath = Join-Path $tmpPath "pester-formatted-items-$(New-Guid)"
+        New-Item -ItemType Directory -Path $script:testPath | Out-Null
+        New-Item -ItemType File -Path (Join-Path $script:testPath "alpha.txt") | Out-Null
+        New-Item -ItemType Directory -Path (Join-Path $script:testPath "subdir") | Out-Null
+    }
+
+    AfterAll {
+        if ($script:testPath -and (Test-Path $script:testPath)) {
+            Remove-Item $script:testPath -Recurse -Force
+        }
+    }
+
+    It "Should define a Get-FormattedItems function" {
+        $function = Get-Command Get-FormattedItems -ErrorAction SilentlyContinue
+        $function | Should -Not -BeNullOrEmpty
+    }
+
+    It "Should define the lsf alias" {
+        $alias = Get-Alias lsf -ErrorAction SilentlyContinue
+        $alias | Should -Not -BeNullOrEmpty
+    }
+
+    It "Should output formatted items when executed directly" {
+        $output = & $scriptPath -Path $script:testPath 6>&1 | Out-String
+        $output | Should -Match 'Directory:'
+        $output | Should -Match 'FILES:'
+        $output | Should -Match 'alpha\.txt'
+    }
+}
+
 Describe "Get-InstalledSoftware.ps1" {
     BeforeAll {
         $scriptPath = Join-Path $systemScriptsPath "Get-InstalledSoftware.ps1"
